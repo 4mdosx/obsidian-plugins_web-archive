@@ -27,9 +27,9 @@ export async function saveArchive (vault: Vault, article: ArticleDataWithMarkdow
     let title = article.title || article.markdown.slice(0, 20)
     const file = vault.getAbstractFileByPath(`web_archive/${title}.md`)
     if (file) title += `-${format(new Date(), 'yyyy-MM-dd')}`
-    const metadata = `---\n \narchive time: ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')} url: ${article.url} \n---\n\n`
+    const metadata = [['archive time', format(new Date(), 'yyyy-MM-dd HH:mm:ss')], ['url', article.url]]
+    const metadataStr = '---\n' + metadata.map(([key, value]) => `${key}: ${value}`).join('\n') + '\n---\n\n'
 
-    console.log('archive', `web_archive/${title}`)
-    vault.create(`web_archive/${title}.md`, metadata + article.markdown)
+    vault.create(`web_archive/${title}.md`, metadataStr + article.markdown)
   }
 }
